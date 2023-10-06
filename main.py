@@ -36,6 +36,7 @@ def gene_overview(gene_list):
 					if value in line:
 						pathogenicity_score[gene] = line.split()[1]
 	with open('output/pathogenicity_scores.tsv','w') as texto:
+		texto.write('Gene , Score')
 		for gene, value in pathogenicity_score.items():
 			texto.write(gene + ' , ' + value + '\n')
 
@@ -56,6 +57,7 @@ def missense_data_extract(enst_list):
 	for gene, data in missense_data.items():
 		file_path = 'output/' + gene + '_missense.tsv'					
 		with open(file_path,'w') as text:
+			text.write('CHROM	POS	REF	ALT	genome	uniprot_id	transcript_id	protein_variant	am_pathogenicity	am_class \n')
 			for value in data:
 				text.write(value)
 
@@ -75,6 +77,7 @@ def aminoacid_subst_data_extract(uniprot_list):
 	for gene, data in aminoacid_data.items():
 		file_path = 'output/' + gene + '_substitutions.tsv'				
 		with open(file_path,'w') as text:
+			text.write('uniprot_id	protein_variant	am_pathogenicity	am_class \n')
 			for value in data:
 				text.write(value)
 
