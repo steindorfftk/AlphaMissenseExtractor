@@ -1,5 +1,44 @@
 from gprofiler import GProfiler
 
+def genome_selector():
+	while True:
+		reference = input('Choose reference genome: (1) - HG19 ; (2) - HG38 ; (3) - Both > ')
+		if reference == '1' or reference == '2' or reference == '3':
+			break
+		else:
+			print("Invalid choice. Please choose a reference genome: ")
+
+	if reference == '1':
+		genome = 'HG19'
+	elif reference == '2':
+		genome = 'HG38'
+	elif reference == '3':
+		genome = 'Both'
+	else:
+		print('Warning: no reference genome selected - Using both')
+		genome = 'Both'
+	return genome
+
+def gene_lister():
+	user_gene_list = []
+	gene = input('Enter a gene and press enter > ').upper()
+	user_gene_list.append(gene)
+
+	phrase = 'Gene list: ' + user_gene_list[0]
+	print(phrase)
+
+	while True:
+		gene = input('Add another gene or send "E" to continue > ').upper()
+		if gene == 'E':
+			break
+		else:
+			user_gene_list.append(gene)
+			phrase += ' , '
+			phrase += gene
+			print(phrase)
+	print(phrase+'\n\n\n')
+	return user_gene_list
+
 def ENST_translator(gene_list):
 	gp = GProfiler(return_dataframe=False)
 	ENST_dic = {}
@@ -142,102 +181,26 @@ def aminoacid_subst_data_extract(uniprot_list):
 	
 	for gene in uniprot_list.keys():
 		aminoacid_data[gene] = [] 
-	if genome == 'HG19':
-		with open('AlphaMissense_Data/AlphaMissense_aa_substitutions_hg19.tsv','r') as text:
-			for line in text:
-				for gene, ids in uniprot_list.items():
-					for tag in ids:
-						if tag in line:
-							aminoacid_data[gene].append(line)
-		
-		for gene, data in aminoacid_data.items():
-			file_path = 'output/' + gene + '_canonical_substitutions_hg19.tsv'				
-			with open(file_path,'w') as text:
-				text.write('uniprot_id	protein_variant	am_pathogenicity	am_class \n')
-				for value in data:
-					text.write(value)
-	elif genome == 'HG38':
-		with open('AlphaMissense_Data/AlphaMissense_aa_substitutions_hg38.tsv','r') as text:
-			for line in text:
-				for gene, ids in uniprot_list.items():
-					for tag in ids:
-						if tag in line:
-							aminoacid_data[gene].append(line)
-		
-		for gene, data in aminoacid_data.items():
-			file_path = 'output/' + gene + '_canonical_substitutions_hg38.tsv'				
-			with open(file_path,'w') as text:
-				text.write('uniprot_id	protein_variant	am_pathogenicity	am_class \n')
-				for value in data:
-					text.write(value)
-	elif genome == 'Both':
-		with open('AlphaMissense_Data/AlphaMissense_aa_substitutions_hg19.tsv','r') as text:
-					for line in text:
-						for gene, ids in uniprot_list.items():
-							for tag in ids:
-								if tag in line:
-									aminoacid_data[gene].append(line)
-		
-		for gene, data in aminoacid_data.items():
-			file_path = 'output/' + gene + '_canonical_substitutions_hg19.tsv'				
-			with open(file_path,'w') as text:
-				text.write('uniprot_id	protein_variant	am_pathogenicity	am_class \n')
-				for value in data:
-					text.write(value)
-		with open('AlphaMissense_Data/AlphaMissense_aa_substitutions_hg38.tsv','r') as text:
-			for line in text:
-				for gene, ids in uniprot_list.items():
-					for tag in ids:
-						if tag in line:
-							aminoacid_data[gene].append(line)
-		
-		for gene, data in aminoacid_data.items():
-			file_path = 'output/' + gene + '_canonical_substitutions_hg38.tsv'				
-			with open(file_path,'w') as text:
-				text.write('uniprot_id	protein_variant	am_pathogenicity	am_class \n')
-				for value in data:
-					text.write(value)		
+	with open('AlphaMissense_Data/AlphaMissense_aa_substitutions.tsv','r') as text:
+		for line in text:
+			for gene, ids in uniprot_list.items():
+				for tag in ids:
+					if tag in line:
+						aminoacid_data[gene].append(line)
+	
+	for gene, data in aminoacid_data.items():
+		file_path = 'output/' + gene + '_substitutions.tsv'				
+		with open(file_path,'w') as text:
+			text.write('uniprot_id	protein_variant	am_pathogenicity	am_class \n')
+			for value in data:
+				text.write(value)
 			
 #Choose genome
-while True:
-    reference = input('Choose reference genome: (1) - HG19 ; (2) - HG38 ; (3) - Both > ')
-    
-    if reference in ['1', '2', '3']:
-        break
-    else:
-        print("Invalid choice. Please choose a reference genome: ")
+genome = genome_selector()
 
-if reference == '1':
-	genome = 'HG19'
-elif reference == '2':
-	genome = 'HG38'
-elif reference == '3':
-	genome == 'Both'
-else:
-	print('Warning: no reference genome selected - Using both')
-	genome == 'Both'
-
-user_gene_list = []
-gene = input('Enter a gene and press enter > ').upper()
-user_gene_list.append(gene)
-
-phrase = 'Gene list: ' + user_gene_list[0]
-print(phrase)
-
-while True:
-	gene = input('Add another gene or send "E" to continue > ').upper()
-	if gene == 'E':
-		break
-	else:
-		user_gene_list.append(gene)
-		phrase += ' , '
-		phrase += gene
-		print(phrase)
-		
-input_gene_list = user_gene_list
+#Select gene list
+input_gene_list = gene_lister()
 	
-print(phrase+'\n\n\n')
-
 
 #Identificators
 print("Searching for genes' ENSTs...")
