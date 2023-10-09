@@ -1,9 +1,9 @@
-#Main
-Program intended to facilitate the extraction of pathogenicity data for missense mutations and aminoacid substitutions from AlphaMissense database.
+1 - Run setup.py script
+- Must use sudo.
+- It will download and unzip AlphaMissense data for all genes.
 
-#Setup
-Run setup.py script with sudo.
-
-#Usage
-Run main.py script
-
+2 - Run main.py script
+- Choose a human genome assembly.
+- Input one or more genes.
+- It will copy and save the pathogenicity predictions for each gene in separete output file.
+ 
